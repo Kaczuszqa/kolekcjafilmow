@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Movie from '../models/Movie';
+import Review from '../models/Review';
 
 export const createMovie = async (req: Request, res: Response) => {
     try {
@@ -46,8 +47,9 @@ export const updateMovie = async (req: Request, res: Response) => {
 
 export const deleteMovie = async (req: Request, res: Response) => {
     try {
+        await Review.deleteMany({ movieId: req.params.id });
         await Movie.findByIdAndDelete(req.params.id);
-        res.json({ message: 'Movie deleted' });
+        res.json({ message: 'Movie and related reviews deleted' });
     } catch (err) {
         res.status(500).json({ error: (err as Error).message });
     }
